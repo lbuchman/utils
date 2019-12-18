@@ -18,4 +18,6 @@ double CheckLimits(double min, double max, double value, String desc);
 //float CheckLimits(float min, float max, float value);
 int CheckLimits(int min, int max, int value, String desc);
 void hexdump(const void * memory, size_t bytes);
+uint32_t rotl32(uint32_t n, unsigned int c);
+uint32_t rotr32(uint32_t n, unsigned int c);
 #endif

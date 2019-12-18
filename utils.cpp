@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <utils.h>
-#include <log.h>
+#include <limits.h> 
 
 /****************************************************************************/
 /* return temp in C   */
@@ -115,7 +115,6 @@ float CheckLimits1(float min, float max, float value, String desc)
 {
     if((value < min) || (value > max))
     {
-        logme(kLogError, "%s:%d  %s Limit Error %2.2f-%2.2f value = %2.2f", POS_LOG_ARG, desc.c_str(), min, max, value);
         return 0.0;
     }
 
@@ -131,7 +130,6 @@ int CheckLimits(int min, int max, int value, String desc)
 {
     if((value < min) || (value > max))
     {
-        logme(kLogError, "%s:%d %s  Limit Error %d-%d value = %d", POS_LOG_ARG, desc.c_str(), min, max, value);
         return 0;
     };
 
@@ -191,4 +189,30 @@ void hexdump(const void * memory, size_t bytes)
     }
 
     return;
+}
+
+/*****************************************************************
+
+
+* *************************************************************
+*/
+uint32_t rotl32(uint32_t n, unsigned int c)
+{
+    const unsigned int mask = (CHAR_BIT * sizeof(n) - 1);    // assumes width is a power of 2.
+    // assert ( (c<=mask) &&"rotate by type width or more");
+    c &= mask;
+    return (n << c) | (n >> ((-c) &mask));
+}
+
+/*****************************************************************
+
+
+* *************************************************************
+*/
+uint32_t rotr32(uint32_t n, unsigned int c)
+{
+    const unsigned int mask = (CHAR_BIT * sizeof(n) - 1);
+    // assert ( (c<=mask) &&"rotate by type width or more");
+    c &= mask;
+    return (n >> c) | (n << ((-c) &mask));
 }
