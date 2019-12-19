@@ -3,8 +3,7 @@
 
 #define  MOVING_WINDOW_SIZE 20
 
-struct Window
-{
+struct Window {
     int window[MOVING_WINDOW_SIZE];
     int window_idx;
     long int window_total;

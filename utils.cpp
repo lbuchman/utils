@@ -1,12 +1,11 @@
 #include <Arduino.h>
 #include <utils.h>
-#include <limits.h> 
+#include <limits.h>
 
 /****************************************************************************/
 /* return temp in C   */
 /****************************************************************************/
-float moving_window_average(int dat, Window& window)
-{
+float moving_window_average(int dat, Window& window) {
     window.window_total -= window.window[window.window_idx];
     window.window_total += dat;
     window.window[window.window_idx] = dat;
@@ -22,16 +21,13 @@ float moving_window_average(int dat, Window& window)
  * return
  ********************************************************************
  */
-bool expired_interval(size_t& timer, size_t interval, size_t& prev_run_time, char* name, bool debug)
-{
+bool expired_interval(size_t& timer, size_t interval, size_t& prev_run_time, char* name, bool debug) {
     size_t timenow = millis();
 
-    if(timer >  timenow)
-    {
+    if(timer >  timenow) {
         return false;
     }
-    else
-    {
+    else {
         prev_run_time = timenow;
         timer = timenow + interval;
         return true;
@@ -46,25 +42,20 @@ bool expired_interval(size_t& timer, size_t interval, size_t& prev_run_time, cha
 
 * *************************************************************
 */
-unsigned int stringToBcd(char *buffer, int hole, int frac)
-{
+unsigned int stringToBcd(char *buffer, int hole, int frac) {
     unsigned int ret = 0;
     int i = 0;
 
-    for(i = 0; i < (hole); i++)
-    {
-        if(buffer[i] == '.')
-        {
-            if(!frac)
-            {
+    for(i = 0; i < (hole); i++) {
+        if(buffer[i] == '.') {
+            if(!frac) {
                 return ret;
             }
 
             continue;
         }
 
-        if(i)
-        {
+        if(i) {
             ret = ret << 4;
         }
 
@@ -80,8 +71,7 @@ unsigned int stringToBcd(char *buffer, int hole, int frac)
 
 * *************************************************************
 */
-unsigned int doubleToBcd(double number, int hole, int frac)
-{
+unsigned int doubleToBcd(double number, int hole, int frac) {
     unsigned int ret;
     char buffer[32];
     char format[32];
@@ -95,10 +85,8 @@ unsigned int doubleToBcd(double number, int hole, int frac)
 
 * *************************************************************
 */
-double CheckLimits(double min, double max, double value, String desc)
-{
-    if((value < min) || (value > max))
-    {
+double CheckLimits(double min, double max, double value, String desc) {
+    if((value < min) || (value > max)) {
         // logme(kLogError, "%s:%d  %s Limit Error %2.2lf-%2.2lf value = %2.2lf", POS_LOG_ARG,desc.c_str(), min,max,value );
         return 0.0l;
     }
@@ -111,10 +99,8 @@ double CheckLimits(double min, double max, double value, String desc)
 
 * *************************************************************
 */
-float CheckLimits1(float min, float max, float value, String desc)
-{
-    if((value < min) || (value > max))
-    {
+float CheckLimits1(float min, float max, float value, String desc) {
+    if((value < min) || (value > max)) {
         return 0.0;
     }
 
@@ -126,10 +112,8 @@ float CheckLimits1(float min, float max, float value, String desc)
 
 * *************************************************************
 */
-int CheckLimits(int min, int max, int value, String desc)
-{
-    if((value < min) || (value > max))
-    {
+int CheckLimits(int min, int max, int value, String desc) {
+    if((value < min) || (value > max)) {
         return 0;
     };
 
@@ -142,20 +126,17 @@ int CheckLimits(int min, int max, int value, String desc)
 
 * *************************************************************
 */
-void hexdump(const void * memory, size_t bytes)
-{
+void hexdump(const void * memory, size_t bytes) {
     const unsigned char * p, * q;
     int i;
     p = (unsigned char *) memory;
     Serial.println("Hex Dump");
 
-    while(bytes)
-    {
+    while(bytes) {
         q = p;
         Serial.printf("%p: ", (void *) p);
 
-        for(i = 0; i < 12 && bytes; ++i)
-        {
+        for(i = 0; i < 12 && bytes; ++i) {
             Serial.printf("%02X ", *p);
             ++p;
             --bytes;
@@ -163,8 +144,7 @@ void hexdump(const void * memory, size_t bytes)
 
         bytes += i;
 
-        while(i < 12)
-        {
+        while(i < 12) {
             Serial.printf("XX ");
             ++i;
         }
@@ -172,15 +152,13 @@ void hexdump(const void * memory, size_t bytes)
         Serial.printf("| ");
         p = q;
 
-        for(i = 0; i < 12 && bytes; ++i)
-        {
+        for(i = 0; i < 12 && bytes; ++i) {
             Serial.printf("%c", isprint(*p) && !isspace(*p) ? *p : ' ');
             ++p;
             --bytes;
         }
 
-        while(i < 12)
-        {
+        while(i < 12) {
             Serial.printf(" ");
             ++i;
         }
@@ -196,9 +174,8 @@ void hexdump(const void * memory, size_t bytes)
 
 * *************************************************************
 */
-uint32_t rotl32(uint32_t n, unsigned int c)
-{
-    const unsigned int mask = (CHAR_BIT * sizeof(n) - 1);    // assumes width is a power of 2.
+uint32_t rotl32(uint32_t n, unsigned int c) {
+    const unsigned int mask = (CHAR_BIT * sizeof(n) - 1);      // assumes width is a power of 2.
     // assert ( (c<=mask) &&"rotate by type width or more");
     c &= mask;
     return (n << c) | (n >> ((-c) &mask));
@@ -209,8 +186,7 @@ uint32_t rotl32(uint32_t n, unsigned int c)
 
 * *************************************************************
 */
-uint32_t rotr32(uint32_t n, unsigned int c)
-{
+uint32_t rotr32(uint32_t n, unsigned int c) {
     const unsigned int mask = (CHAR_BIT * sizeof(n) - 1);
     // assert ( (c<=mask) &&"rotate by type width or more");
     c &= mask;
