@@ -26,7 +26,8 @@ bool expired_interval(size_t& timer, size_t interval, size_t& prev_run_time, cha
 
     if(timer >  timenow) {
         return false;
-    } else {
+    }
+    else {
         prev_run_time = timenow;
         timer = timenow + interval;
         return true;
@@ -135,7 +136,7 @@ void hexdump(const void * memory, size_t bytes) {
         q = p;
         Serial.printf("%p: ", (void *) p);
 
-        for(i = 0; i < 12 && bytes; ++i) {
+        for(i = 0; i < 16 && bytes; ++i) {
             Serial.printf("%02X ", *p);
             ++p;
             --bytes;
@@ -143,7 +144,7 @@ void hexdump(const void * memory, size_t bytes) {
 
         bytes += i;
 
-        while(i < 12) {
+        while(i < 16) {
             Serial.printf("XX ");
             ++i;
         }
@@ -151,13 +152,13 @@ void hexdump(const void * memory, size_t bytes) {
         Serial.printf("| ");
         p = q;
 
-        for(i = 0; i < 12 && bytes; ++i) {
+        for(i = 0; i < 16 && bytes; ++i) {
             Serial.printf("%c", isprint(*p) && !isspace(*p) ? *p : ' ');
             ++p;
             --bytes;
         }
 
-        while(i < 12) {
+        while(i < 16) {
             Serial.printf(" ");
             ++i;
         }
