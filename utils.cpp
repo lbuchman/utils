@@ -129,6 +129,11 @@ int CheckLimits(int min, int max, int value, String desc) {
 void hexdump(const void * memory, size_t bytes) {
     const unsigned char * p, * q;
     int i;
+
+    if(!Serial) {
+        return;
+    }
+
     p = (unsigned char *) memory;
     Serial.println("Hex Dump");
 
