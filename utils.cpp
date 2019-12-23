@@ -5,12 +5,12 @@
 /****************************************************************************/
 /* return temp in C   */
 /****************************************************************************/
-float moving_window_average(int dat, Window& window) {
+float moving_window_average(long int dat, Window& window) {
     window.window_total -= window.window[window.window_idx];
     window.window_total += dat;
     window.window[window.window_idx] = dat;
-    window.window_idx = (window.window_idx < (MOVING_WINDOW_SIZE - 1)) ? (window.window_idx + 1) : 0;
-    return (window.window_total / MOVING_WINDOW_SIZE);
+    window.window_idx = (window.window_idx < (window.size - 1)) ? (window.window_idx + 1) : 0;
+    return (window.window_total / window.size);
 }
 
 /*!
