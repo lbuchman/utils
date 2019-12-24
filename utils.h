@@ -4,9 +4,9 @@
 
 struct Window {
     Window(int _size) {
-       size = _size;
-       window = new int[_size]; 
-       memset(window, 0, sizeof(long int) * size);
+        size = _size;
+        window = new int[_size];
+        memset(window, 0, sizeof(long int) * size);
     }
     int *window;
     int window_idx = 0;
