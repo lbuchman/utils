@@ -26,8 +26,7 @@ bool expired_interval(size_t& timer, size_t interval, size_t& prev_run_time, cha
 
     if(timer >  timenow) {
         return false;
-    }
-    else {
+    } else {
         prev_run_time = timenow;
         timer = timenow + interval;
         return true;
