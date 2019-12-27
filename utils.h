@@ -3,7 +3,7 @@
 
 
 struct Window {
-    Window(int _size) {
+    Window(int _size = 10) {
         size = _size;
         window = new int[_size];
         memset(window, 0, sizeof(long int) * size);
