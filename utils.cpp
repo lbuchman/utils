@@ -2,17 +2,7 @@
 #include <utils.h>
 #include <limits.h>
 
-/****************************************************************************/
-/* return temp in C   */
-/****************************************************************************/
-float moving_window_average(long int dat, Window& window) {
 
-    window.window_total -= window.window[window.window_idx];
-    window.window_total += dat;
-    window.window[window.window_idx] = dat;
-    window.window_idx = (window.window_idx < (window.size - 1)) ? (window.window_idx + 1) : 0;
-    return (float)(1.0 * (float) window.window_total / (float) window.size);
-}
 /*!
  ********************************************************************
  * brief
