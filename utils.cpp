@@ -187,3 +187,4 @@ uint32_t rotr32(uint32_t n, unsigned int c) {
     c &= mask;
     return (n >> c) | (n << ((-c) &mask));
 }
+
