@@ -1,14 +1,25 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <termios.h>
+#include <unistd.h>
 
-unsigned int stringToBcd(char *buffer, int hole, int frac);
-unsigned int doubleToBcd(double number, int hole, int frac);
-bool expired_interval(size_t& timer, size_t interval, size_t& prev_run_time, char* name, bool debug);
-double CheckLimits(double min, double max, double value, String desc);
-//float CheckLimits(float min, float max, float value);
-int CheckLimits(int min, int max, int value);
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+    
+    
 void hexdump(const void * memory, size_t bytes);
-uint32_t rotl32(uint32_t n, unsigned int c);
-uint32_t rotr32(uint32_t n, unsigned int c);
+
+
+#ifdef __cplusplus
+}
+#endif
 #endif
