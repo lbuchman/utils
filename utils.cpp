@@ -2,7 +2,7 @@
 #include <utils.h>
 #include <limits.h>
 
-
+#if HW!=PC
 /*!
  ********************************************************************
  * brief
@@ -110,6 +110,7 @@ int CheckLimits(int min, int max, int value) {
     return value;
 }
 
+#endif
 
 /*****************************************************************
 
@@ -165,10 +166,10 @@ void hexdump(const void * memory, size_t bytes) {
 }
 
 /*****************************************************************
-
-
-* *************************************************************
-*/
+ * 
+ * 
+ * *************************************************************
+ */
 uint32_t rotl32(uint32_t n, unsigned int c) {
     const unsigned int mask = (CHAR_BIT * sizeof(n) - 1);      // assumes width is a power of 2.
     // assert ( (c<=mask) &&"rotate by type width or more");
