@@ -8,7 +8,7 @@ extern "C"
 #endif
 
 #if HW==PC
-    void hexdump(const void * memory, size_t bytes);
+void hexdump(const void * memory, size_t bytes);
 #else
 unsigned int stringToBcd(char *buffer, int hole, int frac);
 unsigned int doubleToBcd(double number, int hole, int frac);
