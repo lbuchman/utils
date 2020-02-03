@@ -126,7 +126,7 @@ void hexdump(const void * memory, size_t bytes) {
     }
 
     p = (unsigned char *) memory;
-    Serial.println("Hex Dump");
+    Serial.printf("timeStamp: %7.3f mSec\n\r", micros() / 1000.0);
 
     while(bytes) {
         q = p;
