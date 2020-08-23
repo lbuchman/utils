@@ -7,16 +7,14 @@ extern "C"
 {
 #endif
 
-#if HW==PC
-void hexdump(const void * memory, size_t bytes);
-#else
+
 unsigned int stringToBcd(char *buffer, int hole, int frac);
 unsigned int doubleToBcd(double number, int hole, int frac);
 int CheckLimits(int min, int max, int value);
 void hexdump(const void * memory, size_t bytes);
 uint32_t rotl32(uint32_t n, unsigned int c);
 uint32_t rotr32(uint32_t n, unsigned int c);
-#endif
+
 #ifdef __cplusplus
 }
 #endif
