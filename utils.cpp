@@ -3,7 +3,7 @@
 #include <limits.h>
 
 
- 
+
 /*!
  ********************************************************************
  * brief
@@ -111,7 +111,7 @@ int CheckLimits(int min, int max, int value) {
     return value;
 }
 
- 
+
 
 /*****************************************************************
 
@@ -132,21 +132,23 @@ void hexdump(const void * memory, size_t bytes) {
     if(!Serial) {
         return;
     }
-   
+
     p = (unsigned char *) memory;
 
     while(bytes) {
         q = p;
         uint32_t timeNow = micros();
-        
-        if (printTimetsamp) {
+
+        if(printTimetsamp) {
             Serial.printf("%11.3f  %7.3f  ", timeNow / 1000.0, (timeNow - prevDumpFile) / 1000.0);
         }
         else {
-            Serial.printf("%s", (char*) "                      "); 
+            Serial.printf("%s", (char*) "                      ");
         }
+
         prevDumpFile = timeNow;
         printTimetsamp = false;
+
         for(i = 0; i < 16 && bytes; ++i) {
             Serial.printf("%02X ", *p);
             ++p;
@@ -176,6 +178,7 @@ void hexdump(const void * memory, size_t bytes) {
 
         Serial.printf(" |\n\r");
     }
+
     Serial.println();
     return;
 }
