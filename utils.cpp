@@ -1,25 +1,23 @@
 #include <Arduino.h>
 #include <utils.h>
 #include <limits.h>
-
+#include <log.h>
 
 
 /*!
  ********************************************************************
  * brief
- *
+ * size_t& timer shall be global variables
  *
  * return
  ********************************************************************
  */
-bool expired_interval(size_t& timer, size_t interval, size_t& prev_run_time, char* name, bool debug) {
+bool expired_interval(size_t& timer, size_t interval) {
     size_t timenow = millis();
-
     if(timer >  timenow) {
         return false;
     }
     else {
-        prev_run_time = timenow;
         timer = timenow + interval;
         return true;
     }
@@ -33,124 +31,35 @@ bool expired_interval(size_t& timer, size_t interval, size_t& prev_run_time, cha
 
 * *************************************************************
 */
-unsigned int stringToBcd(char *buffer, int hole, int frac) {
-    unsigned int ret = 0;
-    int i = 0;
+void hexdump(const void * memory, size_t bytes, boolean printTimetsamp, LogLevel loglevel) {
+    
+    if (loglevel > getLogLevel()) return;
 
-    for(i = 0; i < (hole); i++) {
-        if(buffer[i] == '.') {
-            if(!frac) {
-                return ret;
-            }
-
-            continue;
-        }
-
-        if(i) {
-            ret = ret << 4;
-        }
-
-        ret |= (buffer[i] - '0') & 0x0F;
-    }
-
-    return ret;
-}
-
-
-/*****************************************************************
-
-
-* *************************************************************
-*/
-unsigned int doubleToBcd(double number, int hole, int frac) {
-    unsigned int ret;
-    char buffer[32];
-    char format[32];
-    sprintf(format, "%%%d.%df", hole, frac);
-    sprintf(buffer, format, number);
-    ret = stringToBcd(buffer, hole, frac);
-    return ret;
-}
-/*****************************************************************
-
-
-* *************************************************************
-*/
-double CheckLimits(double min, double max, double value, String desc) {
-    if((value < min) || (value > max)) {
-        // logme(kLogError, "%s:%d  %s Limit Error %2.2lf-%2.2lf value = %2.2lf", POS_LOG_ARG,desc.c_str(), min,max,value );
-        return 0.0l;
-    }
-
-    return value;
-}
-
-/*****************************************************************
-
-
-* *************************************************************
-*/
-float CheckLimits1(float min, float max, float value, String desc) {
-    if((value < min) || (value > max)) {
-        return 0.0;
-    }
-
-    return value;
-}
-
-/*****************************************************************
-
-
-* *************************************************************
-*/
-int CheckLimits(int min, int max, int value) {
-    if((value < min) || (value > max)) {
-        return -1;
-    };
-
-    return value;
-}
-
-
-
-/*****************************************************************
-
-
-* *************************************************************
-*/
-/*****************************************************************
-
-
-* *************************************************************
-*/
-void hexdump(const void * memory, size_t bytes) {
-    const unsigned char * p, * q;
-    uint32_t prevDumpFile = 0;
+    const  char * p, * q;
     int i;
-    boolean printTimetsamp = true;
 
     if(!Serial) {
         return;
     }
 
-    p = (unsigned char *) memory;
-
+    p = (char *) memory;
+    
+    
     while(bytes) {
         q = p;
         uint32_t timeNow = micros();
 
         if(printTimetsamp) {
-            Serial.printf("%11.3f  %7.3f  ", timeNow / 1000.0, (timeNow - prevDumpFile) / 1000.0);
+            printme(NO_CR, NO_TIMESTAMP,"[%7d]  ", timeNow);
         }
         else {
-            Serial.printf("%s", (char*) "                      ");
+            printme(NO_CR, NO_TIMESTAMP,"%s", (char*) "                      ");
         }
 
-        prevDumpFile = timeNow;
         printTimetsamp = false;
 
         for(i = 0; i < 16 && bytes; ++i) {
-            Serial.printf("%02X ", *p);
+             printme(NO_CR, NO_TIMESTAMP, "%02X ", (char) *p);
             ++p;
             --bytes;
         }
@@ -158,28 +67,28 @@ void hexdump(const void * memory, size_t bytes) {
         bytes += i;
 
         while(i < 16) {
-            Serial.printf("XX ");
+            printme(NO_CR, NO_TIMESTAMP, "XX ");
             ++i;
         }
-
-        Serial.printf("| ");
+        
+        printme(NO_CR, NO_TIMESTAMP, "| ");
         p = q;
 
         for(i = 0; i < 16 && bytes; ++i) {
-            Serial.printf("%c", isprint(*p) && !isspace(*p) ? *p : ' ');
+            printme(NO_CR, NO_TIMESTAMP, "\033[1;32m%c\033[0m", isprint(*p) && !isspace(*p) ? (char)*p : ' ');
             ++p;
             --bytes;
         }
 
         while(i < 16) {
-            Serial.printf(" ");
+            printme(NO_CR, NO_TIMESTAMP, " ");
             ++i;
         }
-
-        Serial.printf(" |\n\r");
+        
+        printme(NO_CR, NO_TIMESTAMP, " |\n\r");
     }
 
-    Serial.println();
+    printme(NO_CR, NO_TIMESTAMP, "\n\r");
     return;
 }
 
