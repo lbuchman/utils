@@ -1,7 +1,30 @@
-
+#include <Arduino.h>
 #include <utils.h>
 #include <limits.h>
-#include <ctype.h>
+#include <log.h>
+
+
+/*!
+ ********************************************************************
+ * brief
+ * size_t& timer shall be global variables
+ *
+ * return
+ ********************************************************************
+ */
+bool expired_interval(size_t& timer, size_t interval) {
+    size_t timenow = millis();
+
+    if(timer >  timenow) {
+        return false;
+    }
+    else {
+        timer = timenow + interval;
+        return true;
+    }
+
+    return false;
+}
 
 
 /*****************************************************************
@@ -9,19 +32,37 @@
 
 * *************************************************************
 */
-void hexdump(const void * memory, size_t bytes) {
-    const unsigned char * p, * q;
+void hexdump(const void * memory, size_t bytes, boolean printTimetsamp, LogLevel loglevel) {
+
+    if(loglevel > getLogLevel()) {
+        return;
+    }
+
+    const  char * p, * q;
     int i;
 
+    if(!Serial) {
+        return;
+    }
 
-    p = (unsigned char *) memory;
+    p = (char *) memory;
+
 
     while(bytes) {
         q = p;
-        printf("%p: ", (void *) p);
+        uint32_t timeNow = micros();
+
+        if(printTimetsamp) {
+            printme(NO_CR, NO_TIMESTAMP, "[%7d]  ", timeNow);
+        }
+        else {
+            printme(NO_CR, NO_TIMESTAMP, "%s", (char*) "                      ");
+        }
+
+        printTimetsamp = false;
 
         for(i = 0; i < 16 && bytes; ++i) {
-            printf("%02X ", *p);
+            printme(NO_CR, NO_TIMESTAMP, "%02X ", (char) *p);
             ++p;
             --bytes;
         }
@@ -29,27 +70,134 @@ void hexdump(const void * memory, size_t bytes) {
         bytes += i;
 
         while(i < 16) {
-            printf("XX ");
+            printme(NO_CR, NO_TIMESTAMP, "XX ");
             ++i;
         }
 
-        printf("| ");
+        printme(NO_CR, NO_TIMESTAMP, "| ");
         p = q;
 
         for(i = 0; i < 16 && bytes; ++i) {
-            printf("%c", isprint(*p) && !isspace(*p) ? *p : ' ');
+            printme(NO_CR, NO_TIMESTAMP, "\033[1;32m%c\033[0m", isprint(*p) && !isspace(*p) ? (char)*p : ' ');
             ++p;
             --bytes;
         }
 
         while(i < 16) {
-            printf(" ");
+            printme(NO_CR, NO_TIMESTAMP, " ");
             ++i;
         }
 
-        printf(" |\n\r");
+        printme(NO_CR, NO_TIMESTAMP, " |\n\r");
     }
 
+    printme(NO_CR, NO_TIMESTAMP, "\n\r");
     return;
 }
 
+/*****************************************************************
+ *
+ *
+ * *************************************************************
+ */
+uint32_t rotl32(uint32_t n, unsigned int c) {
+    const unsigned int mask = (CHAR_BIT * sizeof(n) - 1);      // assumes width is a power of 2.
+    // assert ( (c<=mask) &&"rotate by type width or more");
+    c &= mask;
+    return (n << c) | (n >> ((-c) &mask));
+}
+
+/*****************************************************************
+
+
+* *************************************************************
+*/
+uint32_t rotr32(uint32_t n, unsigned int c) {
+    const unsigned int mask = (CHAR_BIT * sizeof(n) - 1);
+    // assert ( (c<=mask) &&"rotate by type width or more");
+    c &= mask;
+    return (n >> c) | (n << ((-c) &mask));
+}
+
+/*****************************************************************
+
+
+* *************************************************************
+*/
+unsigned int stringToBcd(char *buffer, int hole, int frac) {
+    unsigned int ret = 0;
+    int i = 0;
+
+    for(i = 0; i < (hole); i++) {
+        if(buffer[i] == '.') {
+            if(!frac) {
+                return ret;
+            }
+
+            continue;
+        }
+
+        if(i) {
+            ret = ret << 4;
+        }
+
+        ret |= (buffer[i] - '0') & 0x0F;
+    }
+
+    return ret;
+}
+
+
+/*****************************************************************
+
+
+* *************************************************************
+*/
+unsigned int doubleToBcd(double number, int hole, int frac) {
+    unsigned int ret;
+    char buffer[32];
+    char format[32];
+    sprintf(format, "%%%d.%df", hole, frac);
+    sprintf(buffer, format, number);
+    ret = stringToBcd(buffer, hole, frac);
+    return ret;
+}
+/*****************************************************************
+
+
+* *************************************************************
+*/
+double CheckLimits(double min, double max, double value, String desc) {
+    if((value < min) || (value > max)) {
+        // logme(kLogError, "%s:%d  %s Limit Error %2.2lf-%2.2lf value = %2.2lf", POS_LOG_ARG,desc.c_str(), min,max,value );
+        return 0.0l;
+    }
+
+    return value;
+}
+
+/*****************************************************************
+
+
+* *************************************************************
+*/
+float CheckLimits1(float min, float max, float value, String desc) {
+    if((value < min) || (value > max)) {
+        return 0.0;
+    }
+
+    return value;
+}
+
+/*****************************************************************
+
+
+* *************************************************************
+*/
+int CheckLimits(int min, int max, int value) {
+    if((value < min) || (value > max)) {
+        return -1;
+    };
+
+    return value;
+}
