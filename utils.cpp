@@ -3,6 +3,37 @@
 #include <limits.h>
 #include <log.h>
 
+/*!
+ ********************************************************************
+ * 
+ * 
+ *
+ * return true if summer time, otherwise false
+ ********************************************************************
+ */
+bool IsDST(int day, int month, int dow) {
+    //January, february, and december are out.
+    if(month < 3 || month > 11) {
+        return false;
+    }
+
+    //April to October are in
+    if(month > 3 && month < 11) {
+        return true;
+    }
+
+    int previousSunday = day - dow;
+
+    //In march, we are DST if our previous sunday was on or after the 8th.
+    if(month == 3) {
+        return previousSunday >= 8;
+    }
+
+    //In november we must be before the first sunday to be dst.
+    //That means the previous sunday must be before the 1st.
+    return previousSunday <= 0;
+}
+
 
 /*!
  ********************************************************************
