@@ -64,7 +64,6 @@ bool expired_interval(size_t& timer, size_t interval) {
 * *************************************************************
 */
 void hexdump(const void * memory, size_t bytes, boolean printTimetsamp, LogLevel loglevel) {
-
     if(loglevel > getLogLevel()) {
         return;
     }
