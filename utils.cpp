@@ -83,7 +83,7 @@ void hexdump(const void * memory, size_t bytes, boolean printTimetsamp, LogLevel
         uint32_t timeNow = micros();
 
         if(printTimetsamp) {
-            printme(NO_CR, NO_TIMESTAMP, "[%7d]  ", timeNow);
+            printme(NO_CR, NO_TIMESTAMP, "[%18d]  ", timeNow / 1000);
         }
         else {
             printme(NO_CR, NO_TIMESTAMP, "%s", (char*) "                      ");
